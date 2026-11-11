@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mom's Kitchen Cookbook — Delicious Home Recipes</title>
+  <meta name="description" content="An easy-to-use, warm light-mode recipe cookbook for Mom with cooking mode, ingredient checklists, serving scaler, and kitchen timer.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="font-size-md">
+  <!-- Top Application Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <span class="brand-icon" aria-hidden="true">📖</span>
+        <div class="brand-text">
+          <h1 class="brand-title">Mom's Kitchen Cookbook</h1>
+          <span class="brand-tagline">Heartfelt recipes made with love</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Text Size Controls for Mom's Comfort -->
+        <div class="text-size-widget" role="group" aria-label="Text size adjustment">
+          <span class="widget-label">Text:</span>
+          <button type="button" id="btnFontSm" class="btn-text-size" title="Smaller text" aria-label="Small text size">A-</button>
+          <button type="button" id="btnFontMd" class="btn-text-size active" title="Standard text" aria-label="Medium text size">A</button>
+          <button type="button" id="btnFontLg" class="btn-text-size" title="Larger, easy-to-read text" aria-label="Large text size">A+</button>
+        </div>
+
+        <button type="button" id="btnOpenPasteModal" class="btn btn-secondary">
+          <span aria-hidden="true">📋</span> Paste / Import
+        </button>
+
+        <button type="button" id="btnOpenAddModal" class="btn btn-primary">
+          <span aria-hidden="true">➕</span> Add Recipe
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <!-- Hero / Welcome Banner -->
+    <section class="hero-section" aria-label="Welcome banner">
+      <div class="hero-content">
+        <h2 class="hero-heading">What are we cooking today, Mom? 🍳</h2>
+        <p class="hero-desc">
+          Browse favorite home-cooked meals, search by ingredients, or scale servings for family dinners.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="search-wrapper">
+          <label for="searchInput" class="sr-only">Search recipes by title or ingredient</label>
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input 
+            type="search" 
+            id="searchInput" 
+            placeholder="Search lasagna, chicken soup, chocolate chip cookies, garlic..." 
+            autocomplete="off"
+          >
+          <button type="button" id="btnClearSearch" class="btn-clear-search hidden" title="Clear search" aria-label="Clear search">✕</button>
+        </div>
+
+        <!-- Category Filters -->
+        <nav class="categories-nav" aria-label="Recipe categories">
+          <div class="category-pills" id="categoryPills">
+            <!-- Dynamically populated or rendered -->
+            <button type="button" class="pill active" data-category="all">All Recipes (<span id="countAll">0</span>)</button>
+            <button type="button" class="pill" data-category="favorites">❤️ Favorites (<span id="countFavs">0</span>)</button>
+            <button type="button" class="pill" data-category="Breakfast">Breakfast (&lt;180 kcal)</button>
+            <button type="button" class="pill" data-category="Lunch">Lunch Bowls</button>
+            <button type="button" class="pill" data-category="Dinner">Dinner (High Protein)</button>
+            <button type="button" class="pill" data-category="Soya Specials">Soya Specials</button>
+            <button type="button" class="pill" data-category="Paneer & Tofu">Paneer &amp; Tofu</button>
+          </div>
+        </nav>
+      </div>
+    </section>
+
+    <!-- Recipes Grid Section -->
+    <section class="recipes-container" aria-label="Recipe list">
+      <div class="recipes-header">
+        <h3 class="section-title" id="recipesHeading">All Recipes</h3>
+        <span class="recipes-count" id="recipesFoundCount">Showing all recipes</span>
+      </div>
+
+      <div class="recipe-grid" id="recipeGrid" role="region" aria-live="polite">
+        <!-- Dynamic recipe cards inserted here -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state hidden" id="emptyState">
+        <span class="empty-icon" aria-hidden="true">🍲</span>
+        <h3>No recipes found</h3>
+        <p>Try searching for a different dish or ingredient, or add a new recipe to your collection.</p>
+        <button type="button" id="btnResetFilters" class="btn btn-secondary">Show All Recipes</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p class="footer-note">Handcrafted with care for Mom • Easy Light Mode • Saved locally on your device</p>
+      <div class="footer-links">
+        <button type="button" id="btnExportData" class="footer-btn">📥 Backup Recipes</button>
+        <button type="button" id="btnImportData" class="footer-btn">📤 Restore Backup</button>
+        <input type="file" id="importFileInput" accept=".json" class="hidden">
+        <button type="button" id="btnResetData" class="footer-btn">↺ Reset Default Recipes</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS (<dialog closedby="any">) ==================== -->
+
+  <!-- 1. Recipe Detail Modal -->
+  <dialog id="recipeDetailDialog" closedby="any" aria-labelledby="detailTitle">
+    <div class="dialog-inner">
+      <div class="detail-header-bar">
+        <button type="button" class="btn-close-dialog" data-close-dialog="recipeDetailDialog" aria-label="Close recipe details">✕</button>
+      </div>
+
+      <article class="recipe-detail-view" id="recipeDetailContent">
+        <!-- Dynamic detail content populated here -->
+      </article>
+    </div>
+  </dialog>
+
+  <!-- 2. Kitchen Cook Mode Modal (Fullscreen counter-friendly view) -->
+  <dialog id="kitchenModeDialog" closedby="any" aria-labelledby="cookModeHeading">
+    <div class="kitchen-mode-container">
+      <header class="kitchen-mode-header">
+        <div class="km-brand">
+          <span class="km-tag">🍳 Kitchen Cook Mode</span>
+          <h2 id="cookModeHeading" class="km-title">Recipe Title</h2>
+        </div>
+        <div class="km-header-controls">
+          <!-- Docked Kitchen Timer -->
+          <div class="mini-timer-widget">
+            <span class="timer-display" id="kmTimerDisplay">00:00</span>
+            <button type="button" id="btnKmTimerToggle" class="btn-timer-action" title="Start/Pause Timer">▶</button>
+            <button type="button" id="btnKmTimerReset" class="btn-timer-action" title="Reset Timer">↺</button>
+          </div>
+          <button type="button" class="btn-close-dialog" data-close-dialog="kitchenModeDialog" aria-label="Exit Kitchen Mode">✕ Exit</button>
+        </div>
+      </header>
+
+      <div class="kitchen-mode-body">
+        <!-- Step Instruction Centerpiece -->
+        <div class="km-main-step">
+          <div class="km-step-badge">
+            Step <span id="kmCurrentStepNum">1</span> of <span id="kmTotalSteps">8</span>
+          </div>
+
+          <div class="km-step-card">
+            <p id="kmStepText" class="km-step-text">Instruction goes here...</p>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="km-progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1">
+            <div class="km-progress-fill" id="kmProgressFill"></div>
+          </div>
+
+          <div class="km-nav-controls">
+            <button type="button" id="btnKmPrevStep" class="btn btn-secondary btn-lg" disabled>
+              ← Previous Step
+            </button>
+            <button type="button" id="btnKmNextStep" class="btn btn-primary btn-lg">
+              Next Step →
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Ingredients Drawer (Visible for reference) -->
+        <aside class="km-ingredients-sidebar">
+          <h3>Ingredients Reference</h3>
+          <p class="km-subtext">Checked items cross off below:</p>
+          <ul id="kmIngredientsList" class="km-checklist">
+            <!-- Dynamic checklist -->
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 3. Add / Edit Recipe Modal -->
+  <dialog id="recipeFormDialog" closedby="any" aria-labelledby="formTitle">
+    <div class="dialog-inner form-modal">
+      <div class="detail-header-bar">
+        <h2 id="formTitle">Add a New Recipe</h2>
+        <button type="button" class="btn-close-dialog" data-close-dialog="recipeFormDialog" aria-label="Close form">✕</button>
+      </div>
+
+      <form id="recipeForm" class="styled-form">
+        <input type="hidden" id="formRecipeId">
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="formTitleInput">Recipe Title *</label>
+            <input type="text" id="formTitleInput" required placeholder="e.g., Mom's Lemon Blueberry Muffins">
+          </div>
+          <div class="form-group flex-1">
+            <label for="formCategorySelect">Category</label>
+            <select id="formCategorySelect">
+              <option value="Main Dishes">Main Dishes</option>
+              <option value="Soups & Stews">Soups & Stews</option>
+              <option value="Baking & Desserts">Baking & Desserts</option>
+              <option value="Breakfast">Breakfast</option>
+              <option value="Quick Bites">Quick Bites</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="formSubtitleInput">Brief Description or Family Story</label>
+          <input type="text" id="formSubtitleInput" placeholder="e.g., A weekend breakfast tradition passed down from Nana">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formPrepTime">Prep Time</label>
+            <input type="text" id="formPrepTime" placeholder="e.g., 15 mins">
+          </div>
+          <div class="form-group">
+            <label for="formCookTime">Cook Time</label>
+            <input type="text" id="formCookTime" placeholder="e.g., 25 mins">
+          </div>
+          <div class="form-group">
+            <label for="formServings">Servings (Default)</label>
+            <input type="number" id="formServings" value="4" min="1" max="50">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="formImageUrl">Image URL (Optional)</label>
+          <input type="url" id="formImageUrl" placeholder="https://images.unsplash.com/...">
+          <small class="form-help">Leave blank to use a delicious default cooking illustration</small>
+        </div>
+
+        <div class="form-group">
+          <label for="formIngredientsText">Ingredients (one per line) *</label>
+          <span class="form-help">Tip: Write quantity first (e.g. "2 cups all-purpose flour", "1 tbsp olive oil", "1 pinch salt")</span>
+          <textarea id="formIngredientsText" rows="6" required placeholder="2 cups flour&#10;1 tsp baking powder&#10;0.5 cup sugar&#10;2 large eggs"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="formInstructionsText">Step-by-Step Directions (one step per line) *</label>
+          <textarea id="formInstructionsText" rows="6" required placeholder="Preheat oven to 375°F.&#10;Whisk dry ingredients in a large bowl.&#10;Stir in wet ingredients until just combined.&#10;Bake for 20 minutes until golden."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="formTipInput">Mom's Secret Tip or Note (Optional)</label>
+          <input type="text" id="formTipInput" placeholder="e.g., Toss blueberries in a spoonful of flour so they don't sink!">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" data-close-dialog="recipeFormDialog">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveRecipe">Save Recipe to Cookbook</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- 4. Quick Paste / Smart Import Modal -->
+  <dialog id="quickPasteDialog" closedby="any" aria-labelledby="pasteModalTitle">
+    <div class="dialog-inner form-modal">
+      <div class="detail-header-bar">
+        <h2 id="pasteModalTitle">📋 Paste / Import Recipe</h2>
+        <button type="button" class="btn-close-dialog" data-close-dialog="quickPasteDialog" aria-label="Close import dialog">✕</button>
+      </div>
+
+      <div class="paste-intro">
+        <p>
+          Did someone send you a recipe on Gemini, WhatsApp, email, or a message? 
+          <strong>Just paste the text below</strong> and our smart kitchen helper will automatically extract the title, ingredients, and steps!
+        </p>
+      </div>
+
+      <form id="quickPasteForm" class="styled-form">
+        <div class="form-group">
+          <label for="pasteRawText">Paste Recipe Text Here:</label>
+          <textarea 
+            id="pasteRawText" 
+            rows="10" 
+            placeholder="Example:&#10;Creamy Tomato Basil Soup&#10;&#10;Ingredients:&#10;- 2 tbsp olive oil&#10;- 1 onion, diced&#10;- 2 cans crushed tomatoes&#10;- 1 cup vegetable broth&#10;- 0.5 cup heavy cream&#10;&#10;Instructions:&#10;1. Sauté onion in olive oil until soft.&#10;2. Add tomatoes and broth, simmer 20 mins.&#10;3. Blend until smooth and stir in heavy cream."
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" data-close-dialog="quickPasteDialog">Cancel</button>
+          <button type="submit" class="btn btn-primary">✨ Import into Cookbook</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Scripts -->
+  <script src="recipes-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
